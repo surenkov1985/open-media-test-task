@@ -1,0 +1,112 @@
+.search {
+    width: 100%;
+    max-width: calc(1440px - 24px);
+
+    &__container {
+        width: 100%;
+        height: 100%;
+        padding: 40px;
+        background: $LightColor;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr 1fr;
+        grid-template-rows: 1.2fr 0.58fr 1fr;
+        grid-gap: 25px;
+
+        @media (max-width: 991px) {
+            display: flex;
+            flex-direction: column;
+            row-gap: 40px;
+        }
+
+        @media (max-width: 768px) {
+            padding: 25px 20px;
+        }
+
+        @media (max-width: 550px) {
+            padding: 20px 12px;
+        }
+    }
+
+    &__title {
+        color: $DarkColor;
+        font-size: 48px;
+        line-height: 52px;
+        font-weight: $BoldWeight;
+        letter-spacing: -1px;
+        grid-column-start: 1;
+        grid-column-end: span 1;
+
+        @media (max-width: 1200px) {
+            font-size: 44px;
+            line-height: 110%;
+        }
+
+        @media (max-width: 991px) {
+            font-size: 44px;
+        }
+
+        @media (max-width: 768px) {
+            font-size: 40px;
+            letter-spacing: -0.4px;
+        }
+
+        @media (max-width: 550px) {
+            font-size: 36px;
+        }
+    }
+
+    &__text {
+        grid-row-start: 2;
+        grid-row-end: span 2;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        &-title {
+            font-weight: $NormalWeight;
+            font-size: 24px;
+            line-height: 32px;
+            color: $BGColor;
+            letter-spacing: -0.4px;
+        }
+
+        &-terms {
+            font-weight: $NormalWeight;
+            font-size: 12px;
+            line-height: 16px;
+            letter-spacing: -0.3px;
+            color: $BGColor;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+
+            @media (max-width: 550px) {
+                margin-top: 12px;
+            }
+        }
+
+        &-link {
+            font-weight: $BoldWeight;
+            font-size: 12px;
+            line-height: 16px;
+            letter-spacing: -0.3px;
+            color: $BGColor;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+    }
+
+    &__form {
+
+        grid-column-start: 2;
+        grid-column-end: span 2;
+        grid-row-start: 1;
+        grid-row-end: span 3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

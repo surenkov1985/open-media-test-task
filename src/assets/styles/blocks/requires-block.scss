@@ -1,0 +1,77 @@
+.requires {
+
+    &__title {
+        font-weight: $BoldWeight;
+        font-size: 24px;
+        line-height: 32px;
+        letter-spacing: -0.4px;
+        color: $LightTitleColor;
+    }
+
+    &__control {
+        display: flex;
+        margin-top: 40px;
+
+        @media (max-width: 550px) {
+            margin-top: 32px;
+        }
+    }
+
+    &__tab {
+        & .own:checked {
+
+            &~div[data-target="own"] {
+                display: block;
+            }
+        }
+
+        & .amazon {
+            &:checked {
+
+                &~div[data-target="amazon"] {
+                    display: block;
+                }
+            }
+        }
+    }
+
+    &__check {
+        width: 0;
+        height: 0;
+        display: none;
+
+        &:checked {
+
+            &+.requires__button {
+                color: $LightTitleColor;
+                border-bottom: 1px solid $LightTitleColor;
+            }
+        }
+    }
+
+    &__button {
+        display: inline-block;
+        font-weight: $BoldWeight;
+        font-size: 24px;
+        line-height: 34px;
+        letter-spacing: -0.4px;
+        color: rgba($GrayColor, 0.4);
+        cursor: pointer;
+
+        &.own-btn {
+            margin-right: 14px;
+        }
+
+        &:hover {
+            border-bottom: 1px solid rgba($GrayColor, 0.4);
+        }
+
+        @media (max-width: 550px) {
+            max-width: 50%;
+        }
+    }
+
+    &__tab {
+        width: 100%;
+    }
+}

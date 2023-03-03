@@ -1,0 +1,41 @@
+.tab {
+    display: none;
+    margin-top: 32px;
+
+    &__list {
+        display: flex;
+        flex-wrap: wrap;
+        column-gap: 48px;
+
+        @media (max-width: 768px) {
+            flex-direction: column;
+        }
+    }
+
+    &__item {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(207, 211, 214, 0.1);
+        font-weight: 300;
+        font-size: 24px;
+        line-height: 32px;
+        letter-spacing: -0.4px;
+        color: #EEEEEE;
+        width: calc((100% - 48px) / 2);
+
+        @media (max-width: 991px) {
+            flex-direction: column;
+            align-items: flex-start;
+            row-gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            width: 100%;
+        }
+
+        &-title {
+            min-width: 250px;
+        }
+    }
+}

@@ -1,0 +1,29 @@
+.about {
+    width: 100%;
+    max-width: calc(1440px - 24px);
+
+    &__container {
+        padding: 120px 40px;
+        display: flex;
+        flex-direction: column;
+        row-gap: 120px;
+
+        @media (max-width: 768px) {
+            padding: 80px 20px;
+        }
+
+        @media (max-width: 550px) {
+            padding: 40px 12px;
+        }
+    }
+
+    &__description {
+        display: flex;
+        align-items: center;
+
+        @media (max-width: 991px) {
+            flex-direction: column;
+            row-gap: 36px;
+        }
+    }
+}

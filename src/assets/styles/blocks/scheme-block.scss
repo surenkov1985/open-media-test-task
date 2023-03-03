@@ -1,0 +1,139 @@
+.scheme {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    @media (max-width: 991px) {
+        width: 100%;
+        justify-content: center;
+    }
+
+    &__yellow {
+        &-square {
+            width: 92px;
+            height: 92px;
+            background: $ActiveFormColor;
+
+            @media (max-width: 1200px) {
+                width: 82px;
+                height: 82px;
+            }
+
+            @media (max-width: 991px) {
+                width: 92px;
+                height: 92px;
+            }
+
+            @media (max-width: 768px) {
+                width: 60px;
+                height: 60px;
+            }
+
+            @media (max-width: 550px) {
+                width: 49px;
+                height: 49px;
+            }
+        }
+    }
+
+    &__line {
+        width: 100%;
+        max-width: 276px;
+        height: 0;
+        border: 1px dashed $DashedColor;
+
+        @media (max-width: 1200px) {
+            max-width: 200px;
+        }
+
+        @media (max-width: 768px) {
+            max-width: 190px;
+        }
+
+        @media (max-width: 550px) {
+            max-width: 128px;
+        }
+    }
+
+    &__dashed-square {
+        width: 147px;
+        height: 137px;
+        border: 1px dashed $DashedColor;
+        border-right: none;
+
+        @media (max-width: 1200px) {
+            height: 133px;
+            width: 70px;
+        }
+
+        @media (max-width: 991px) {
+            height: 147px;
+            width: 137px;
+        }
+
+        @media (max-width: 768px) {
+            height: 133px;
+            width: 60px;
+        }
+
+        @media (max-width: 550px) {
+            height: 133px;
+            width: 58px;
+        }
+    }
+
+    &__icons {
+        display: flex;
+        flex-direction: column;
+        row-gap: 25px;
+
+        @media (max-width: 1200px) {}
+
+        @media (max-width: 991px) {}
+
+        @media (max-width: 768px) {
+            row-gap: 56px;
+        }
+
+        @media (max-width: 550px) {
+            row-gap: 74px;
+        }
+    }
+
+    &__icon {
+        width: 112px;
+        height: 112px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #323033;
+
+        & svg {
+            width: calc(86 / 112 * 100%);
+        }
+
+        @media (max-width: 1200px) {
+            width: 90px;
+            height: 90px;
+
+
+        }
+
+        @media (max-width: 991px) {
+            width: 112px;
+            height: 112px;
+        }
+
+        @media (max-width: 768px) {
+            width: 80px;
+            height: 80px;
+        }
+
+        @media (max-width: 550px) {
+            width: 60px;
+            height: 60px;
+        }
+    }
+}
