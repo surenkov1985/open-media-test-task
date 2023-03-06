@@ -1,21 +1,35 @@
 import React, { useEffect, useState } from "react";
 
-export default function Player({ file, backHandler }) {
+export default function Player({ file, backHandler, url, buffered }) {
 	const [isPlay, setIsPlay] = useState(false);
-	const [audioDuration, setAudioDuration] = useState(0);
+	const [audioDuration, setAudioDuration] = useState(null);
 	const [audioTime, setAudiotime] = useState(0);
-	const [audioVolume, setAudioVolume] = useState(file.volume);
+	const [audioVolume, setAudioVolume] = useState(0);
 	const [minute, setMinute] = useState();
 	const [second, setSecond] = useState();
 	const [timer, setTimer] = useState(null);
-    let timeInterval;
+	const [timeValue, setTimeValue] = useState();
+	let timeInterval;
+
+	const handleProgress = () => {
+		const loaded = (file.buffered.end(0));
+		const total = file.duration || file.buffered.end(0);
+		const progress = (loaded / total) * 100;
+		setTimeValue(progress);
+
+		console.log(progress);
+	};
 
 	useEffect(() => {
-		setAudioDuration(file.duration);
-
-		console.log(Math.trunc(file.duration / 60), file.duration % 60);
-	}, [file.duration]);
-
+		if (file) {
+			setAudioDuration(file.duration);
+			setAudioVolume(file.volume);
+			file.addEventListener("progress", handleProgress);
+			return () => {
+				file.removeEventListener("progress", handleProgress);
+			};
+		}
+	}, []);
 	useEffect(() => {
 		if (isPlay) {
 			timeInterval = setInterval(() => {
@@ -27,7 +41,7 @@ export default function Player({ file, backHandler }) {
 						.padStart(2, "0")
 				);
 				setSecond(
-					Math.trunc(file.currentTime % 60)
+					Math.round(file.currentTime % 60)
 						.toString()
 						.padStart(2, "0")
 				);
@@ -39,7 +53,6 @@ export default function Player({ file, backHandler }) {
 
 	const playHandler = () => {
 		file.play();
-        console.log(file.error);
 		setIsPlay(true);
 		setAudioDuration(file.duration);
 	};
@@ -62,7 +75,15 @@ export default function Player({ file, backHandler }) {
 
 	return (
 		<div className="player">
-			<button className="player__title" onClick={() => {backHandler(); file.pause()}} >&#8592; Back</button>
+			<button
+				className="player__title"
+				onClick={() => {
+					backHandler();
+					file.pause();
+				}}
+			>
+				&#8592; Back
+			</button>
 			<div className="player__container">
 				{!isPlay ? (
 					<button className="player__play" onClick={playHandler}>
@@ -79,14 +100,22 @@ export default function Player({ file, backHandler }) {
 					</button>
 				)}
 				<label className="player__progress-control">
-					<input type="range" min={0} max={audioDuration ? audioDuration : 200} step="0.1" value={audioTime} onChange={timeHandler} />
+					<span style={{ backgroundSize: `${timeValue}% 100%` }}></span>
+					<input
+						type="range"
+						min={0}
+						max={audioDuration ? audioDuration : 200}
+						style={{ backgroundSize: `${(audioTime / audioDuration) * 100 || audioTime}% 100%` }}
+						step="0.1"
+						value={audioTime}
+						onChange={timeHandler}
+					/>
 				</label>
 				<div className="player__volume-row">
 					<div>
 						<span>
 							{minute || "00"} : {second || "00"}
 						</span>
-						/<span></span>
 					</div>
 					<div>
 						<label className="player__volume-control">

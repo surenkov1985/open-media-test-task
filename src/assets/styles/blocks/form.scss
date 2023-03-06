@@ -32,8 +32,12 @@
         font-size: 24px;
         line-height: 32px;
         letter-spacing: -0.4px;
-        color: $InputColor;
+        color: $InputColor!important;
         width: 100%;
+
+        &-webkit-autofill {
+            -webkit-text-fill-color: $InputColor !important;
+        }
 
         &::placeholder {
             color: $InputColor;
@@ -45,6 +49,10 @@
 
         @media (max-width: 768px) {
             padding: 16px;
+        }
+
+        &:disabled {
+            opacity: 0.5;
         }
     }
 
@@ -63,6 +71,10 @@
         @media (max-width: 768px) {
             padding: 14px 12px;
         }
+
+        &:disabled {
+            opacity: 0.5;
+        }
     }
 
     &__error {
@@ -74,12 +86,20 @@
         color: $ErrorColor;
         top: calc(100% + 8px);
         display: none;
+
+        &.visible {
+            display: block;
+        }
     }
 
     &__error-icon {
         position: absolute;
         right: 16px;
         display: none;
+
+        &.visible {
+            display: block;
+        }
     }
 
     &__label {
