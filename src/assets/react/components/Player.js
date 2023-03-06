@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-export default function Player({ file, backHandler, url, buffered }) {
+export default function Player({  backHandler, url }) {
 	const [isPlay, setIsPlay] = useState(false);
 	const [audioDuration, setAudioDuration] = useState(null);
 	const [audioTime, setAudiotime] = useState(0);
@@ -9,11 +9,13 @@ export default function Player({ file, backHandler, url, buffered }) {
 	const [second, setSecond] = useState();
 	const [timer, setTimer] = useState(null);
 	const [timeValue, setTimeValue] = useState();
+	const [player, setPlayer] = useState();
+	const playerRef = useRef(null);
 	let timeInterval;
 
 	const handleProgress = () => {
-		const loaded = (file.buffered.end(0));
-		const total = file.duration || file.buffered.end(0);
+		const loaded = player.buffered.end(0);
+		const total = player.duration || player.buffered.end(0);
 		const progress = (loaded / total) * 100;
 		setTimeValue(progress);
 
@@ -21,27 +23,38 @@ export default function Player({ file, backHandler, url, buffered }) {
 	};
 
 	useEffect(() => {
-		if (file) {
-			setAudioDuration(file.duration);
-			setAudioVolume(file.volume);
-			file.addEventListener("progress", handleProgress);
-			return () => {
-				file.removeEventListener("progress", handleProgress);
-			};
+		if (playerRef.current) {
+			setPlayer(playerRef.current);
 		}
 	}, []);
+
+	useEffect(() => {
+		console.log(player);
+		if (player) {
+			player.volume = 0.8
+			player.addEventListener("progress", handleProgress);
+
+			setAudioDuration(player.duration);
+			setAudioVolume(player.volume);
+
+			return () => {
+				player.removeEventListener("progress", handleProgress);
+			};
+		}
+	}, [player]);
+
 	useEffect(() => {
 		if (isPlay) {
 			timeInterval = setInterval(() => {
-				console.log(111, file.currentTime);
-				setAudiotime(file.currentTime);
+				console.log(111, player.currentTime);
+				setAudiotime(player.currentTime);
 				setMinute(
-					Math.trunc(file.currentTime / 60)
+					Math.trunc(player.currentTime / 60)
 						.toString()
 						.padStart(2, "0")
 				);
 				setSecond(
-					Math.round(file.currentTime % 60)
+					Math.round(player.currentTime % 60)
 						.toString()
 						.padStart(2, "0")
 				);
@@ -52,25 +65,23 @@ export default function Player({ file, backHandler, url, buffered }) {
 	}, [isPlay]);
 
 	const playHandler = () => {
-		file.play();
+		player.play();
 		setIsPlay(true);
-		setAudioDuration(file.duration);
 	};
 
 	const pauseHandler = () => {
-		file.pause();
+		player.pause();
 		setIsPlay(false);
 	};
 
 	const timeHandler = (e) => {
-		console.log(e);
 		setAudiotime(e.target.value);
-		file.currentTime = e.target.value;
+		player.currentTime = e.target.value;
 	};
 
 	const volumeHandler = (e) => {
 		setAudioVolume(e.target.value);
-		file.volume = e.target.value;
+		player.volume = e.target.value;
 	};
 
 	return (
@@ -79,7 +90,8 @@ export default function Player({ file, backHandler, url, buffered }) {
 				className="player__title"
 				onClick={() => {
 					backHandler();
-					file.pause();
+					player.pause();
+					setIsPlay(false);
 				}}
 			>
 				&#8592; Back
@@ -100,6 +112,7 @@ export default function Player({ file, backHandler, url, buffered }) {
 					</button>
 				)}
 				<label className="player__progress-control">
+					<audio src={url} ref={playerRef} />
 					<span style={{ backgroundSize: `${timeValue}% 100%` }}></span>
 					<input
 						type="range"
@@ -112,14 +125,22 @@ export default function Player({ file, backHandler, url, buffered }) {
 					/>
 				</label>
 				<div className="player__volume-row">
-					<div>
+					<div className="player__taimer">
 						<span>
-							{minute || "00"} : {second || "00"}
+							{minute || "00"}:{second || "00"}
 						</span>
 					</div>
 					<div>
 						<label className="player__volume-control">
-							<input type="range" min={0} max={1} step={0.1} value={audioVolume} onChange={volumeHandler} />
+							<input
+								type="range"
+								min={0}
+								max={1}
+								step={0.1}
+								style={{ backgroundSize: `${audioVolume * 100}% 100%` }}
+								value={audioVolume}
+								onChange={volumeHandler}
+							/>
 						</label>
 					</div>
 				</div>

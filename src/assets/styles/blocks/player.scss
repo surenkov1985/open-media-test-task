@@ -42,7 +42,8 @@
             display: block;
             width: 100%;
             position: relative;
-            height: 2px;
+            height: 20px;
+            cursor: pointer;
 
             & input {
                     width: 100%;
@@ -108,10 +109,44 @@
             width: 252px;
             position: relative;
 
+            @media (max-width:768px) {
+                width: 191px;
+            }
+
             & input {
                 width: 100%;
+                background: #FFFFFF;
+                background-image: linear-gradient(90deg, #000000, #000000);
+                -webkit-appearance: none;
+                background-size: 0% 100%;
+                transition: background-size 0s;
+                background-repeat: no-repeat;
+
+                &::-webkit-slider-runnable-track {
+                    height: 2px;
+                    border-radius: 2px;
+                    background: transparent;
+                }
+
+                &::-webkit-slider-thumb {
+                    appearance: none;
+                    width: 16px;
+                    height: 12px;
+                    border-radius: 0px;
+                    background: #000000;
+                    cursor: pointer;
+                    margin-top: -5px;
+                }
             }
         }
+    }
+
+    &__timer {
+        font-weight: $BoldWeight;
+        font-size: 12px;
+        line-height: 16px;
+        letter-spacing: -0.3px;
+        color: $BGColor;
     }
 
     &__input {

@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Player from "./Player";
 import ReactLoading from "react-loading";
+import { useDispatch, useSelector } from "react-redux";
+import { pushLink } from "../redux/dataReducer";
 
 export default function App() {
 	const [file, setFile] = useState();
@@ -10,6 +12,10 @@ export default function App() {
 	const [errorClass, setErrorClass] = useState("");
 	const [isReady, setIsReady] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isLinks, setIsLinks] = useState(false)
+
+	const dispatch = useDispatch()
+	const {links} = useSelector(state => state.data)
 
 	const submitHandler = (e) => {
 		e.preventDefault();
@@ -31,58 +37,89 @@ export default function App() {
 	};
 
 	useEffect(() => {
-		if (file) {setIsReady(true);}
-		// if (file) {
-		// 	file.addEventListener("loadstart", () => {
-		// 		setIsLoading(true);
-		// 		if (file.readyState >= 0) {
-		// 			setIsLoading(false);
-		// 			setIsReady(true);
-		// 		}
-		// 	});
-		// 	file.addEventListener("loadeddata", () => {
-		// 		console.log(file.readyState);
-		// 		if (file.readyState >= 1) {
-		// 			setIsLoading(false);
-		// 			setIsReady(true);
-		// 		}
-		// 	});
+		if (file) {
+			file.addEventListener("loadstart", () => {
+				setIsLoading(true);
+			});
+			file.addEventListener("loadeddata", () => {
+				console.log(file.readyState);
+				if (file.readyState >= 1) {
+					setIsLoading(false);
+					setIsReady(true);
+					dispatch(pushLink(value))
+					
+				}
+			});
 			
-		// 	file.addEventListener("error", (err) => {
-		// 		setError("Audio on this link is not available");
-		// 		setIsLoading(false);
-		// 		setErrorClass("error");
-		// 		setTimeout(() => {
-		// 			setError("");
-		// 			setErrorClass("");
-		// 		}, 3000);
-		// 	});
-		// }
+			file.addEventListener("error", (err) => {
+				setError("Audio on this link is not available");
+				setIsLoading(false);
+				setErrorClass("error");
+				setTimeout(() => {
+					setError("");
+					setErrorClass("");
+				}, 3000);
+			});
+		}
 	}, [file]);
 
 	const backHandler = () => {
 		setFile(null);
+		setValue("")
 		setIsReady(false);
 	};
 
+	const inputHandler = (e) => {
+		setValue(e.target.value)
+		if (links && !isLinks) {
+			setIsLinks(true)
+		}
+	}
+
+	const linkHandler = (link) => {
+		setValue(link)
+		setIsLinks(false)
+	}
+
 	return (
 		<>
-			{isReady && <Player file={file} backHandler={backHandler} url={value}/>}
+			{isReady && <Player backHandler={backHandler} url={value} />}
 			{!isReady && (
 				<form action="" className="form" onSubmit={submitHandler}>
 					<h4 className="form__title">Insert the link</h4>
 					<div className="form__container">
+						{links && isLinks && (
+							<ul className="form__link-list">
+								{links
+									.filter((item) => {
+										let regexp = new RegExp(value, "ig");
+										return regexp.test(item);
+									})
+									.map((link, index) => {
+										return (
+											<li
+												key={index}
+												className="form__link-item"
+												onClick={() => {
+													linkHandler(link);
+												}}
+											>
+												{link}
+											</li>
+										);
+									})}
+							</ul>
+						)}
 						<label className="form__label">
 							<input
 								type="text"
 								id="inpul-link"
 								placeholder="https://"
 								className={["form__input", errorClass].join(" ")}
-								onChange={(e) => {
-									setValue(e.target.value);
-								}}
+								value={value}
+								onChange={inputHandler}
 								disabled={isLoading}
-								// autoComplete="off"
+								autoComplete="off"
 							/>
 							{errorString && (
 								<span className="form__error-icon visible">
