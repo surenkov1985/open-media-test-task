@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Player from "./Player";
 import ReactLoading from "react-loading";
 import { useDispatch, useSelector } from "react-redux";
-import { pushLink } from "../redux/dataReducer";
+import { pushLink, setFileError } from "../redux/dataReducer";
 
 export default function App() {
 	const [file, setFile] = useState();
@@ -13,24 +13,12 @@ export default function App() {
 	const [isReady, setIsReady] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isLinks, setIsLinks] = useState(false);
-	const [url, setUrl] = useState()
 
 	const dispatch = useDispatch();
-	const { links } = useSelector((state) => state.data);
+	const { links, fileError } = useSelector((state) => state.data);
 
 	const submitHandler = (e) => {
 		e.preventDefault();
-
-		// fetch(value)
-		// 	.then((res) => { console.log(res); return res.blob()})
-		// 	.then((data) => {
-		// 		const reader = new FileReader()
-		// 		reader.readAsDataURL(data)
-		// 		reader.onload = () => {
-		// 			setUrl(reader.result);
-		// 			console.log(reader.result);
-		// 		}
-		// 		console.log(data)});
 
 		if (!testString.test(value)) {
 			setError("Error! Invalid URL");
@@ -48,30 +36,43 @@ export default function App() {
 		}
 	};
 
-	useEffect(() => {
-		if (file) {
-			file.addEventListener("loadstart", () => {
-				setIsLoading(true);
-			});
-			file.addEventListener("loadeddata", () => {
-				console.log(file.readyState);
-				if (file.readyState >= 1) {
+	const loadStartHandler = () => {
+		setIsLoading(true);
+	}
+
+	const loadedHandler = () => {
+		if (file.readyState >= 1) {
 					setIsLoading(false);
 					setIsReady(true);
 					dispatch(pushLink(value));
 				}
-			});
+	}
 
-			file.addEventListener("error", (err) => {
-				setError("Audio on this link is not available");
-				setIsLoading(false);
-				setErrorClass("error");
-				setTimeout(() => {
-					setError("");
-					setErrorClass("");
-				}, 3000);
-			});
+	const errorHandler = () => {
+		if (file.error) {
+			dispatch(setFileError("Audio on this link is not available"));
+			setIsLoading(false);
 		}
+	}
+
+	const closeError = () => {
+		dispatch(setFileError(""));
+	}
+
+	useEffect(() => {
+		if (file) {
+			file.addEventListener("loadstart", loadStartHandler);
+			file.addEventListener("loadeddata", loadedHandler);
+			file.addEventListener("error", errorHandler);
+
+			return () => {
+				file.removeEventListener("loadstart", loadStartHandler);
+				file.removeEventListener("loadeddata", loadedHandler);
+				file.removeEventListener("error", errorHandler);
+			};
+		}
+
+		
 	}, [file]);
 
 	const backHandler = () => {
@@ -94,6 +95,28 @@ export default function App() {
 
 	return (
 		<>
+			{fileError && (
+				<div className="error">
+					<div className="error__icon">
+						<svg width="3" height="16" viewBox="0 0 3 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path
+								d="M2.96008 14.0081L0.488083 14.0081L0.488083 16.0001L2.96008 16.0001L2.96008 14.0081ZM2.69608 0.04006L0.776084 0.0400599L0.776083 12.0401L2.69608 12.0401L2.69608 0.04006Z"
+								fill="black"
+							/>
+						</svg>
+					</div>
+					<div className="error__content">
+						<p className="error__title">Warning</p>
+						<p className="error__text">{fileError}</p>
+					</div>
+					<button className="error__close" onClick={closeError}>
+						<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M20 2L2 20" stroke="#767577" strokeWidth="2" strokeLinecap="square" strokeLinejoin="round" />
+							<path d="M2 2L20 20" stroke="#767577" strokeWidth="2" strokeLinecap="square" strokeLinejoin="round" />
+						</svg>
+					</button>
+				</div>
+			)}
 			{isReady && <Player backHandler={backHandler} url={value} />}
 			{!isReady && (
 				<form action="" className="form" onSubmit={submitHandler}>

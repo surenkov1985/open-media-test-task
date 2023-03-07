@@ -4,6 +4,7 @@ const dataSlice = createSlice({
 	name: "data",
 	initialState: {
 		links: localStorage.hasOwnProperty("media-player") ? JSON.parse(localStorage.getItem("media-player")) : [],
+		fileError : ""
 	},
 	reducers: {
 		pushLink(state, actions) {
@@ -12,8 +13,11 @@ const dataSlice = createSlice({
 				localStorage.setItem("media-player", JSON.stringify(state.links));
 			}
 		},
+		setFileError(state, actions) {
+			state.fileError = actions.payload
+		}
 	},
 });
 
-export const { pushLink } = dataSlice.actions;
+export const { pushLink, setFileError } = dataSlice.actions;
 export default dataSlice.reducer;
