@@ -26,9 +26,9 @@
 - Всплывающее уведомление для вывода ошибок
 
 Плеер тестировался со ссылками:
- <https://cdn.drivemusic.me/dl/online/niTJGO8TcUxCK87bhMcRCQ/1678252497/download_music/2014/05/nico-vinz-am-i-wrong.mp3>
- <https://cdn.drivemusic.me/dl/online/s3b9qKh0hVadlp0UA_fzcQ/1678092544/download_music/2014/04/britney-spears-baby-one-more-time.mp3>
- <https://c5.radioboss.fm:18084/stream>
- <https://lalalai.s3.us-west-2.amazonaws.com/media/split/a7564eb8-cbf2-40e2-9cb8-6061d8d055a7/no_vocals>
- <https://cdn.drivemusic.me/dl/online/_qJfWXsWRh9Exjn2jKdUIQ/1678252497/download_music/2016/12/ofenbach-be-mine.mp3>
- <https://cdn.drivemusic.me/dl/online/JHbIpEfOJSRpZPSRTRMBaA/1678252497/download_music/2019/11/the-weeknd-blinding-lights.mp3>
+- <https://cdn.drivemusic.me/dl/online/niTJGO8TcUxCK87bhMcRCQ/1678252497/download_music/2014/05/nico-vinz-am-i-wrong.mp3>
+- <https://cdn.drivemusic.me/dl/online/s3b9qKh0hVadlp0UA_fzcQ/1678092544/download_music/2014/04/britney-spears-baby-one-more-time.mp3>
+- <https://c5.radioboss.fm:18084/stream>
+- <https://lalalai.s3.us-west-2.amazonaws.com/media/split/a7564eb8-cbf2-40e2-9cb8-6061d8d055a7/no_vocals>
+- <https://cdn.drivemusic.me/dl/online/_qJfWXsWRh9Exjn2jKdUIQ/1678252497/download_music/2016/12/ofenbach-be-mine.mp3>
+- <https://cdn.drivemusic.me/dl/online/JHbIpEfOJSRpZPSRTRMBaA/1678252497/download_music/2019/11/the-weeknd-blinding-lights.mp3>
