@@ -1,16 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 
-export default function Player({  backHandler, url }) {
+export default function Player({ backHandler, url }) {
+	const AudioContext = window.AudioContext || window.webkitAudioContext;
+	const [audioContext, setAudioContext] = useState(new AudioContext());
+	const [gainNode, setGainNode] = useState();
+
 	const [isPlay, setIsPlay] = useState(false);
 	const [audioDuration, setAudioDuration] = useState(null);
 	const [audioTime, setAudiotime] = useState(0);
-	const [audioVolume, setAudioVolume] = useState(0);
+	const [audioVolume, setAudioVolume] = useState(0.8);
 	const [minute, setMinute] = useState();
 	const [second, setSecond] = useState();
 	const [timer, setTimer] = useState(null);
 	const [timeValue, setTimeValue] = useState();
 	const [player, setPlayer] = useState();
 	const playerRef = useRef(null);
+	const [track, setTrack] = useState();
 	let timeInterval;
 
 	const handleProgress = () => {
@@ -29,13 +34,17 @@ export default function Player({  backHandler, url }) {
 	}, []);
 
 	useEffect(() => {
-		console.log(player);
+		console.log(audioContext);
 		if (player) {
-			player.volume = 0.8
+			player.volume = 0.8;
 			player.addEventListener("progress", handleProgress);
-
-			setAudioDuration(player.duration);
-			setAudioVolume(player.volume);
+			player.addEventListener("loadeddata", () => {
+				if (player.readyState >= 2) {
+					setAudioDuration(player.duration);
+				}
+			});
+			setTrack(audioContext.createMediaElementSource(player));
+			setGainNode(audioContext.createGain());
 
 			return () => {
 				player.removeEventListener("progress", handleProgress);
@@ -44,10 +53,21 @@ export default function Player({  backHandler, url }) {
 	}, [player]);
 
 	useEffect(() => {
+		console.log(track);
+		if (track) {
+
+			track.connect(gainNode).connect(audioContext.destination);
+			gainNode.gain.volume = 0.8;
+			setAudioVolume(gainNode.gain.volume);
+		}
+	}, [track]);
+
+	useEffect(() => {
 		if (isPlay) {
 			timeInterval = setInterval(() => {
 				console.log(111, player.currentTime);
 				setAudiotime(player.currentTime);
+				console.log(player.videoTracks);
 				setMinute(
 					Math.trunc(player.currentTime / 60)
 						.toString()
@@ -60,16 +80,29 @@ export default function Player({  backHandler, url }) {
 				);
 			}, 1000);
 			setTimer(timeInterval);
+			player.addEventListener("ended", () => {
+				if (player.ended) {
+					setIsPlay(false);
+				}
+			});
 		}
+		console.log(audioTime, audioDuration);
 		return clearInterval(timer);
 	}, [isPlay]);
 
 	const playHandler = () => {
+		if (audioContext.state === "suspended") {
+			audioContext.resume();
+		}
 		player.play();
+		console.log(player);
 		setIsPlay(true);
 	};
 
 	const pauseHandler = () => {
+		if (audioContext.state === "suspended") {
+			audioContext.resume();
+		}
 		player.pause();
 		setIsPlay(false);
 	};
@@ -77,11 +110,13 @@ export default function Player({  backHandler, url }) {
 	const timeHandler = (e) => {
 		setAudiotime(e.target.value);
 		player.currentTime = e.target.value;
+		console.log(audioTime, audioDuration);
 	};
 
 	const volumeHandler = (e) => {
-		setAudioVolume(e.target.value);
-		player.volume = e.target.value;
+		gainNode.gain.value = e.target.value;
+		console.log(gainNode);
+		setAudioVolume(gainNode.gain.value);
 	};
 
 	return (
@@ -112,12 +147,12 @@ export default function Player({  backHandler, url }) {
 					</button>
 				)}
 				<label className="player__progress-control">
-					<audio src={url} ref={playerRef} />
+					<audio src={url} ref={playerRef} crossOrigin="anonymous" />
 					<span style={{ backgroundSize: `${timeValue}% 100%` }}></span>
 					<input
 						type="range"
 						min={0}
-						max={audioDuration ? audioDuration : 200}
+						max={audioDuration}
 						style={{ backgroundSize: `${(audioTime / audioDuration) * 100 || audioTime}% 100%` }}
 						step="0.1"
 						value={audioTime}
@@ -136,7 +171,7 @@ export default function Player({  backHandler, url }) {
 								type="range"
 								min={0}
 								max={1}
-								step={0.1}
+								step={0.01}
 								style={{ backgroundSize: `${audioVolume * 100}% 100%` }}
 								value={audioVolume}
 								onChange={volumeHandler}

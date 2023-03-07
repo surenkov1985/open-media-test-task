@@ -12,10 +12,10 @@ export default function App() {
 	const [errorClass, setErrorClass] = useState("");
 	const [isReady, setIsReady] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const [isLinks, setIsLinks] = useState(false)
+	const [isLinks, setIsLinks] = useState(false);
 
-	const dispatch = useDispatch()
-	const {links} = useSelector(state => state.data)
+	const dispatch = useDispatch();
+	const { links } = useSelector((state) => state.data);
 
 	const submitHandler = (e) => {
 		e.preventDefault();
@@ -46,11 +46,10 @@ export default function App() {
 				if (file.readyState >= 1) {
 					setIsLoading(false);
 					setIsReady(true);
-					dispatch(pushLink(value))
-					
+					dispatch(pushLink(value));
 				}
 			});
-			
+
 			file.addEventListener("error", (err) => {
 				setError("Audio on this link is not available");
 				setIsLoading(false);
@@ -65,21 +64,21 @@ export default function App() {
 
 	const backHandler = () => {
 		setFile(null);
-		setValue("")
+		setValue("");
 		setIsReady(false);
 	};
 
 	const inputHandler = (e) => {
-		setValue(e.target.value)
+		setValue(e.target.value);
 		if (links && !isLinks) {
-			setIsLinks(true)
+			setIsLinks(true);
 		}
-	}
+	};
 
 	const linkHandler = (link) => {
-		setValue(link)
-		setIsLinks(false)
-	}
+		setValue(link);
+		setIsLinks(false);
+	};
 
 	return (
 		<>
@@ -88,7 +87,7 @@ export default function App() {
 				<form action="" className="form" onSubmit={submitHandler}>
 					<h4 className="form__title">Insert the link</h4>
 					<div className="form__container">
-						{links && isLinks && (
+						{links && value && isLinks && (
 							<ul className="form__link-list">
 								{links
 									.filter((item) => {
