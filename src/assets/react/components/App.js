@@ -13,12 +13,24 @@ export default function App() {
 	const [isReady, setIsReady] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isLinks, setIsLinks] = useState(false);
+	const [url, setUrl] = useState()
 
 	const dispatch = useDispatch();
 	const { links } = useSelector((state) => state.data);
 
 	const submitHandler = (e) => {
 		e.preventDefault();
+
+		// fetch(value)
+		// 	.then((res) => { console.log(res); return res.blob()})
+		// 	.then((data) => {
+		// 		const reader = new FileReader()
+		// 		reader.readAsDataURL(data)
+		// 		reader.onload = () => {
+		// 			setUrl(reader.result);
+		// 			console.log(reader.result);
+		// 		}
+		// 		console.log(data)});
 
 		if (!testString.test(value)) {
 			setError("Error! Invalid URL");

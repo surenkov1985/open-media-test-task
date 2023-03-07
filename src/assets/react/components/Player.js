@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 export default function Player({ backHandler, url }) {
-	const AudioContext = window.AudioContext || window.webkitAudioContext;
+	// const AudioContext = window.AudioContext || window.webkitAudioContext;
 	const [audioContext, setAudioContext] = useState(new AudioContext());
 	const [gainNode, setGainNode] = useState();
 
@@ -29,22 +29,28 @@ export default function Player({ backHandler, url }) {
 
 	useEffect(() => {
 		if (playerRef.current) {
-			setPlayer(playerRef.current);
+			setPlayer(new Audio(url,{crossOrigin: "anonymous"}));
 		}
 	}, []);
 
 	useEffect(() => {
 		console.log(audioContext);
 		if (player) {
+			playerRef.current.innerHTML = player;
 			player.volume = 0.8;
-			player.addEventListener("progress", handleProgress);
 			player.addEventListener("loadeddata", () => {
 				if (player.readyState >= 2) {
 					setAudioDuration(player.duration);
 				}
 			});
-			setTrack(audioContext.createMediaElementSource(player));
-			setGainNode(audioContext.createGain());
+			player.addEventListener("progress", handleProgress);
+			player.addEventListener("canplaythrough", () => {
+				console.log(player.readyState);
+				if (player.readyState >= 3) {
+					setTrack(audioContext.createMediaElementSource(player));
+					setGainNode(new GainNode(audioContext));
+				}
+			});
 
 			return () => {
 				player.removeEventListener("progress", handleProgress);
@@ -55,7 +61,7 @@ export default function Player({ backHandler, url }) {
 	useEffect(() => {
 		console.log(track);
 		if (track) {
-
+			console.log(track);
 			track.connect(gainNode).connect(audioContext.destination);
 			gainNode.gain.volume = 0.8;
 			setAudioVolume(gainNode.gain.volume);
@@ -67,7 +73,6 @@ export default function Player({ backHandler, url }) {
 			timeInterval = setInterval(() => {
 				console.log(111, player.currentTime);
 				setAudiotime(player.currentTime);
-				console.log(player.videoTracks);
 				setMinute(
 					Math.trunc(player.currentTime / 60)
 						.toString()
@@ -85,9 +90,10 @@ export default function Player({ backHandler, url }) {
 					setIsPlay(false);
 				}
 			});
+		} else {
+			return clearInterval(timer);
 		}
 		console.log(audioTime, audioDuration);
-		return clearInterval(timer);
 	}, [isPlay]);
 
 	const playHandler = () => {
@@ -115,7 +121,7 @@ export default function Player({ backHandler, url }) {
 
 	const volumeHandler = (e) => {
 		gainNode.gain.value = e.target.value;
-		console.log(gainNode);
+		console.log(gainNode.gain.value);
 		setAudioVolume(gainNode.gain.value);
 	};
 
@@ -147,7 +153,7 @@ export default function Player({ backHandler, url }) {
 					</button>
 				)}
 				<label className="player__progress-control">
-					<audio src={url} ref={playerRef} crossOrigin="anonymous" />
+					<audio src={url} ref={playerRef} crossOrigin="" />
 					<span style={{ backgroundSize: `${timeValue}% 100%` }}></span>
 					<input
 						type="range"
